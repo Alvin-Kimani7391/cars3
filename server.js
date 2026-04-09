@@ -87,8 +87,8 @@ app.get("/product/:id", (req, res) => {
     const title = `${product.make} ${product.model}`;
     const description = product.description || "View product details";
 
-    const frontendURL = `https://your-frontend.vercel.app/carstv.html?id=${product.id}`;
-    const backendURL = `https://your-backend.onrender.com/product/${product.id}`;
+    const frontendURL = `https://https://car4-ivory.vercel.app/carstv.html?id=${product.id}`;
+    const backendURL = `https://cars3-158h.onrender.com/product/${product.id}`;
 
     res.send(`
       <!DOCTYPE html>

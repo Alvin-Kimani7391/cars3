@@ -80,15 +80,20 @@ app.get("/product/:id", (req, res) => {
       return res.status(404).send("Product not found");
     }
 
-    const image = Array.isArray(product.image)
+    // ✅ Ensure image is valid & absolute
+    let image = Array.isArray(product.image)
       ? product.image[0]
       : product.image;
+
+    if (!image.startsWith("http")) {
+      image = `https://cars3-158h.onrender.com/${image}`;
+    }
 
     const title = `${product.make} ${product.model}`;
     const description = product.description || "View product details";
 
     const frontendURL = `https://car4-ivory.vercel.app/carstv.html?id=${product.id}`;
-const backendURL = `https://cars3-158h.onrender.com/product/${product.id}`;
+    const backendURL = `https://cars3-158h.onrender.com/product/${product.id}`;
 
     res.send(`
       <!DOCTYPE html>
@@ -96,23 +101,33 @@ const backendURL = `https://cars3-158h.onrender.com/product/${product.id}`;
       <head>
         <meta charset="UTF-8">
 
-        <!-- Open Graph (WhatsApp / Facebook Preview) -->
+        <!-- ✅ Open Graph -->
         <meta property="og:type" content="website" />
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         <meta property="og:image" content="${image}" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:url" content="${backendURL}" />
 
-        <!-- Twitter -->
+        <!-- ✅ Twitter -->
         <meta name="twitter:card" content="summary_large_image" />
-
-        <!-- Redirect user to frontend after preview -->
-        <meta http-equiv="refresh" content="0; url=${frontendURL}" />
+        <meta name="twitter:title" content="${title}" />
+        <meta name="twitter:description" content="${description}" />
+        <meta name="twitter:image" content="${image}" />
 
         <title>${title}</title>
       </head>
+
       <body>
-        <p>Redirecting to product page...</p>
+        <p>Opening product...</p>
+
+        <!-- ✅ SAFE redirect (works with WhatsApp) -->
+        <script>
+          setTimeout(() => {
+            window.location.href = "${frontendURL}";
+          }, 500);
+        </script>
       </body>
       </html>
     `);

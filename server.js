@@ -103,6 +103,7 @@ app.get("/product/:id", (req, res) => {
         <meta charset="UTF-8">
 
         <!-- ✅ Open Graph -->
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
@@ -127,7 +128,7 @@ app.get("/product/:id", (req, res) => {
         <script>
           setTimeout(() => {
             window.location.href = "${frontendURL}";
-          }, 500);
+          }, 3000);
         </script>
       </body>
       </html>

@@ -2331,6 +2331,21 @@
 
         ],
         "link":"images/samsunggaI0"
+    },
+    {
+        "id": 174,
+        "make": "WUF-W15 Sunportable Wireless Speaker (RR) ",
+        "model": "",
+        "category":"bt",
+        "createdAt": "2026-04-10",
+        "description": "Portable Bluetooth speaker with solar charging support, FM radio, USB/TF playback, built-in mic for hands-free calls, and rechargeable battery for outdoor and everyday music use.",
+        "general":"appliances",
+        "year": 2023,
+        "color": "White",
+        "price": 700,
+        "oldPrice":780,
+        "image":"images2/system2.28.jpg",
+        "link":"images/samsunggaI0"
     }
 
 

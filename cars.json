@@ -2487,7 +2487,7 @@
         "link":"images/mmw.jpg"
     },
     {
-        "id": 183,
+        "id": 184,
         "make": "12 inch Ring Light (ACC)",
         "model": "",
         "category":"ringlight",
@@ -2502,7 +2502,7 @@
         "link":"images/mmw.jpg"
     },
     {
-        "id": 183,
+        "id": 185,
         "make": "10 inch Ring Light (ACC)",
         "model": "",
         "category":"ringlight",
@@ -2517,8 +2517,8 @@
         "link":"images/mmw.jpg"
     },
     {
-        "id": 185,
-        "make": "JBL Mini R-03 wireless earpods",
+        "id": 186,
+        "make": "JBL Mini R-03 wireless earpods (RNG)",
         "model": "",
         "category":"airpods",
         "createdAt": "2026-04-10",
@@ -2532,10 +2532,10 @@
         "link":"images/samsunggaI0"
     },
     {
-        "id": 186,
-        "make": "Shoe Rack  (PHOTON)",
+        "id": 187,
+        "make": "Shoe Rack  (pt)",
         "model": "",
-        "category":"shoeracks",
+        "category":"household",
         "createdAt": "2026-04-10",
         "description": "space-saving storage solution for organized footwear, durable build, and easy access for everyday home use.",
         "general":"household",
@@ -2547,10 +2547,10 @@
         "link":"images/wd.jpg"
     },
     {
-        "id": 187,
-        "make": "Pillow Set  (km p)",
+        "id": 188,
+        "make": "Pillow Set  (kmp)",
         "model": "",
-        "category":"pillows",
+        "category":"household",
         "createdAt": "2026-04-10",
         "description": "2 Pillows Set — soft and supportive comfort for restful sleep, breathable fabric, and ideal firmness for everyday use.",
         "general":"household",
@@ -2562,10 +2562,10 @@
         "link":"images/wd.jpg"
     },
     {
-        "id": 188,
-        "make": "3D Carpet 5*8 (kinjo)",
+        "id": 189,
+        "make": "3D Carpet 5*8 (kj)",
         "model": "",
-        "category":"carpets",
+        "category":"household",
         "createdAt": "2026-04-10",
         "description": "stylish textured design with soft cushioning, durable material, and a modern look to enhance any room décor.",
         "general":"household",
@@ -2577,10 +2577,10 @@
         "link":"images/wd.jpg"
     },
     {
-        "id": 189,
-        "make": "3D Carpet 6*9 (kinjo)",
+        "id": 190,
+        "make": "3D Carpet 6*9 (kj)",
         "model": "",
-        "category":"carpets",
+        "category":"household",
         "createdAt": "2026-04-10",
         "description": "stylish textured design with soft cushioning, durable material, and a modern look to enhance any room décor.",
         "general":"household",
@@ -2592,8 +2592,8 @@
         "link":"images/wd.jpg"
     },
     {
-        "id": 190,
-        "make": "3D Carpet 7*10 (kinjo)",
+        "id": 191,
+        "make": "3D Carpet 7*10 (kj)",
         "model": "",
         "category":"carpets",
         "createdAt": "2026-04-10",

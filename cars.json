@@ -2469,7 +2469,8 @@
         "price": 1000,
         "oldPrice":1100,
         "image":"images2/neckband182.jpg",
-        "link":"images/mmw.jpg"
+        "link":"images/mmw.jpg",
+        "hotDeal": true
     },
     {
         "id": 183,
@@ -2484,7 +2485,8 @@
         "price": 2000,
         "oldPrice":2200,
         "image":"images2/ringlight183.jpg",
-        "link":"images/mmw.jpg"
+        "link":"images/mmw.jpg",
+        "hotDeal": true
     },
     {
         "id": 184,
@@ -2499,7 +2501,8 @@
         "price": 1500,
         "oldPrice":1650,
         "image":"images2/ringlight184.jpg",
-        "link":"images/mmw.jpg"
+        "link":"images/mmw.jpg",
+        "hotDeal": true
     },
     {
         "id": 185,
@@ -2529,7 +2532,9 @@
         "price": 1000,
         "oldPrice":1200,
         "image":"images2/earpods185.jpg",
-        "link":"images/samsunggaI0"
+        "link":"images/samsunggaI0",
+        "hotDeal": true
+
     },
     {
         "id": 187,

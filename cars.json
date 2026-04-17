@@ -62,14 +62,15 @@
         "id": 5,
         "make": "*AILYONS* Glass Top",
         "model": "",
-        "category":"glasstop",
+        "category":"burner",
         "description": "AILYONS Glass Top: Sleek two-burner gas cooktop with a tempered glass surface, auto-ignition for easy start, and energy-saving burners—ideal for modern kitchens.",
         "general":"Kitchenaccesories",
         "year": 2018,
         "color": "White",
         "price": 2300,
         "image":"images2/glasstop5.jpg",
-        "link":"files/frooshi mock up.jpg"
+        "link":"files/frooshi mock up.jpg",
+        "hotDeal":true
     },
             {
         "id": 6,
@@ -143,7 +144,7 @@
     
     {
         "id": 11,
-        "make": "AILYONS I",
+        "make": "AILYONS I Electric Kettle LN",
         "model": "Heater",
         "category":"heater",
         "description": "AILYONS 1.7 L Cordless Electric Kettle: A fast‑boil, cordless kettle with ~1.7 litre capacity, auto shut‑off at boil, boil‑dry protection and sleek stainless/insulated body for safe and convenient everyday use",
@@ -152,20 +153,23 @@
         "color": "Black",
         "price": 1120,
         "image":"images2/heater I0.jpg",
-        "link":"images/mixer.jpg"
+        "link":"images/mixer.jpg",
+        "hotDeal":true
     },
     {
         "id": 12,
-        "make": "AILYONS II",
+        "make": "AILYONS II Electric Heater LN",
         "model": "Heater",
         "category":"heater",
+
         "description": "AILYONS Electric Heater High Power 1500W 1.7 Litres Stainless Steel Electric Kettle With Auto Shut-Off And 360° Swivel Base",
         "general":"Kitchenaccesories",
         "year": 2023,
         "color": "Black",
         "price": 850,
         "image":"images2/heater II0.webp",
-        "link":"images/mixer.jpg"
+        "link":"images/mixer.jpg",
+            "hotDeal":true
     },
     {
         "id": 13,
@@ -254,7 +258,7 @@
     {
         "id": 20,
         "make": "Ramptons",
-        "model": "Electric Kettle",
+        "model": "Electric Kettle LN",
         "category":"heater",
         "description": "Ramtons Electric Kettle – 1.7 L-1.8 L capacity, 1850-2200 W power, auto shut-off & boil-dry protection, 360° swivel base.",
         "general":"Kitchenaccesories",
@@ -558,14 +562,15 @@
     {
         "id": 46,
         "make": "Auto ",
-        "model": "Water Pump",
+        "model": "Water Pump LN",
         "category":"water pump",
         "description": "**Auto Water Pump:** Automatic pump with pressure control for steady water flow in homes and gardens.",
         "year": 2023,
         "color": "White",
         "price": 520,
         "image":"images2/waterpump46.jpg",
-        "link":"images/samsunggaI0"
+        "link":"images/samsunggaI0",
+        "hotDeal":true
     },
     {
         "id": 47,
@@ -1880,7 +1885,7 @@
     },
     {
         "id": 143,
-        "make": "*Ceriotti GEK Hair(blow) Dryer*.",
+        "make": "Ceriotti GEK Hair(blow) Dryer LN",
         "model": "",
         "category":"blowdryer",
         "description": "Ceriotti GEK Hair Dryer: Professional hair dryer with multiple heat/speed settings and concentrator nozzle for quick styling.",
@@ -1893,7 +1898,8 @@
             "images2/blowdryer143II.jpg"
             
         ],
-        "link":"images/samsunggaI0"
+        "link":"images/samsunggaI0",
+        "hotDeal":true
     },
         {
         "id": 144,
@@ -1925,16 +1931,18 @@
     },
     {
         "id": 146,
-        "make": "ELECTROMATE HAIR(BLOW) DRYER",
+        "make": "ELECTROMATE HAIR(BLOW) DRYER je",
         "model": "",
         "category":"blowdryer",
+        "createdAt":"2026-04-17",
         "description": "ELECTROMATE Hair Dryer — lightweight, powerful airflow with multiple heat/speed settings for quick and versatile styling.",
          "general":"appliances",
         "year": 2023,
         "color": "White",
         "price": 1350,
         "image":"images2/blowdryer146.jpg",
-        "link":"images/samsunggaI0"
+        "link":"images/samsunggaI0",
+        "hotDeal":true
     },
     {
         "id": 147,
@@ -2610,10 +2618,197 @@
         "oldPrice":5200,
         "image":"images2/carpets190.jpg",
         "link":"images/wd.jpg"
+    },
+    {
+        "id": 192,
+        "make": "Soundbar Ailyons",
+        "model": "",
+        "category":"system",
+        "createdAt": "2026-04-12",
+        "description": "A soundbar is a slim speaker placed under a TV that improves sound quality and creates a surround effect.",
+        "general":"household",
+        "year": 2020,
+        "color": "Silver",
+        "price": 4500,
+        "oldPrice":4700,
+        "image":"images2/system192.jpg",
+        "link":"images/wd.jpg",
+        "hotDeal": true
+    },
+
+{
+        "id": 193,
+        "make": "Alyons blender LN",
+        "model": "",
+        "category":"blender",
+        "createdAt": "2026-04-12",
+        "description": "a powerful,compact blender with sharp stainless-steel bladers,pefect for smoothies,sauces,and every kitchen use.",
+        "general":"household",
+        "year": 2020,
+        "color": "Silver",
+        "price": 2300,
+        "oldPrice":2450,
+        "image":"images2/blender193.jpg",
+        "link":"images/wd.jpg",
+        "hotDeal": true
+    },
+{
+         "id": 194,
+        "make": "synix soundbar system",
+        "model": "",
+        "category":"system",
+        "createdAt": "2026-04-12",
+        "description": "**Syinix Soundbar System** delivers powerful, immersive sound with deep bass and seamless Bluetooth connectivity—perfect for elevating your home entertainment.",
+        "general":"household",
+        "year": 2020,
+        "color": "Silver",
+        "price": 6500,
+        "oldPrice":6800,
+        "image":"images2/system194.jpg",
+        "link":"images/wd.jpg",
+        "hotDeal": true
+    },
+    {
+        "id": 195,
+        "make": "EUROCHEF Glass Top 2-Burner Gas Cooker (BL)",
+        "model": "",
+        "category":"burner",
+        "createdAt": "2026-04-17",
+        "description": "Sleek two-burner gas cooktop with a tempered glass surface, auto-ignition for easy start, and energy-saving burners—ideal for modern kitchens.",
+        "general":"Kitchenaccesories",
+        "year": 2018,
+        "color": "White",
+        "price": 2100,
+        "image":"images2/burner195.jpg",
+        "link":"files/frooshi mock up.jpg",
+        "hotDeal":true
+    },
+    {
+        "id": 196,
+        "make": "REBUNE Stainless Steel 2-Burner Gas Cooker (BL)",
+        "model": "",
+        "category":"burner",
+        "createdAt": "2026-04-17",
+        "description": "Sleek two-burner gas cooktop with a stainless steel surface, auto-ignition for easy start, and energy-saving burners—ideal for modern kitchens.",
+        "general":"Kitchenaccesories",
+        "year": 2018,
+        "color": "White",
+        "price": 1600,
+        "image":"images2/burner196.jpg",
+        "link":"files/frooshi mock up.jpg",
+        "hotDeal":true
+    },
+    {
+        "id": 197,
+        "make": "Rebune Cooker 3 Gas With 1 Electric Plate (BL)",
+        "model": "",
+        "category":"burner",
+        "createdAt": "2026-04-17",
+        "description": "Sleek four-burner gas cooktop with a stainless steel surface, auto-ignition for easy start, and energy-saving burners—ideal for modern kitchens.",
+        "general":"Kitchenaccesories",
+        "year": 2018,
+        "color": "White",
+        "price": 9000,
+        "oldPrice": 9200,
+        "image":"images2/burner197.jpg",
+        "link":"files/frooshi mock up.jpg",
+        "hotDeal":true
+    },
+    {
+        "id": 198,
+        "make": "Euroken 4G 50×55 Full Gas Standing Cooker With Gas Oven (BL)",
+        "model": "",
+        "category":"burner",
+        "createdAt": "2026-04-17",
+        "description": "Sleek four-burner gas cooktop with a glass surface, auto-ignition for easy start, and energy-saving burners—ideal for modern kitchens With Gas Oven.",
+        "general":"Kitchenaccesories",
+        "year": 2018,
+        "color": "White",
+        "price": 13500,
+        "oldPrice": 13800,
+        "image":"images2/burner198.jpg",
+        "link":"files/frooshi mock up.jpg",
+        "hotDeal":true
+    },
+    {
+        "id": 199,
+        "make": "ELECTROMATE stand mixer LM",
+        "model": "",
+        "category":"standmixer",
+        "createdAt": "2026-04-17",
+        "description": "Compact electric hand mixer with stainless steel whisks and multiple speeds—perfect for quick mixing and baking.",
+        "general":"Kitchenaccesories",
+        "year": 2018,
+        "color": "White",
+        "price": 2000,
+        "oldPrice": 2300,
+        "image":"images2/standmixer199.jpg",
+        "link":"files/frooshi mock up.jpg",
+        "hotDeal":true
+    },
+    {
+        "id": 200,
+        "make": "SONAR Electric Heater VV",
+        "model": "Heater",
+        "category":"heater",
+        "createdAt": "2026-04-17",
+        "description": "SONAR Electric Heater High Power 1500W 1.7 Litres Stainless Steel Electric Kettle With Auto Shut-Off And 360° Swivel Base",
+        "general":"Kitchenaccesories",
+        "year": 2023,
+        "color": "Black",
+        "price": 850,
+        "oldPrice": 1000,
+        "image":"images2/heater200.jpg",
+        "link":"images/mixer.jpg",
+            "hotDeal":true
+    },
+    {
+        "id": 201,
+        "make": "Electric Egg Cooker LN",
+        "model": "Heater",
+        "category":"heater",
+        "createdAt": "2026-04-17",
+        "description": "Compact electric egg cooker with automatic shut-off, multi-egg capacity, and fast steam cooking—perfect for soft, medium, or hard-boiled eggs with minimal effort.",
+        "general":"Kitchenaccesories",
+        "year": 2023,
+        "color": "Black",
+        "price": 1000,
+        "oldPrice": 1100,
+        "image":"images2/eggcooker201.jpg",
+        "link":"images/mixer.jpg",
+            "hotDeal":true
+    },
+    {
+        "id": 202,
+        "make": "Fashion rotary mop 17L bucket, 112cm mop, 2 rags LN",
+        "model": "",
+        "category":"household",
+        "createdAt": "2026-04-10",
+        "description": "Stylish rotary mop with 360° spinning head, absorbent microfiber pads, and easy wringing bucket—perfect for effortless, hands-free floor cleaning.",
+        "general":"household",
+        "year": 2020,
+        "color": "Silver",
+        "price": 2300,
+        "oldPrice":2800,
+        "image":"images2/mopper202.jpg",
+        "link":"images/wd.jpg"
+    },
+    {
+        "id": 203,
+        "make": "Signature blender LN",
+        "model": "",
+        "category":"blender",
+        "createdAt": "2026-04-12",
+        "description": "a powerful,compact blender with sharp stainless-steel bladers,pefect for smoothies,sauces,and every kitchen use.",
+        "general":"household",
+        "year": 2020,
+        "color": "Silver",
+        "price": 3700,
+        "oldPrice":5000,
+        "image":"images2/blender203.jpg",
+        "link":"images/wd.jpg",
+        "hotDeal": true
     }
-
-
-
 
 
     

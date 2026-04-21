@@ -1,7 +1,12 @@
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 import express from "express";
+import path from "path";
 import cors from "cors";
 import fs from "fs";
-import path from "path";
+
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -15,9 +20,130 @@ const __dirname = path.dirname(__filename);
 // ===============================
 // MIDDLEWARE
 // ===============================
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://car4-ivory.vercel.app",
+    "http://localhost:3000"
+  ]
+}));
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "images2")));
+
+
+import Order from "./models/Order.js";
+
+// ===============================
+// GENERATE ORDER NUMBER
+// ===============================
+function generateOrderNumber() {
+  return "ORD-" + Math.floor(100000 + Math.random() * 900000);
+}
+
+// ===============================
+// CREATE ORDER
+// ===============================
+app.post("/confirm-order", async (req, res) => {
+  try {
+    const {
+      phone,
+      email,
+      total,
+      items,
+      location,
+      mpesaCode
+    } = req.body;
+
+    // ✅ validation
+    if (!phone || !email || !total || !items || !mpesaCode) {
+      return res.status(400).json({
+        error: "Missing required fields"
+      });
+    }
+
+    const orderNumber = generateOrderNumber();
+
+    const newOrder = new Order({
+      orderNumber,
+      phone,
+      email,
+      total,
+      items,
+      location,
+      mpesaCode,
+      status: "PENDING"
+    });
+
+    await newOrder.save();
+
+    res.json({
+      message: "Order placed successfully",
+      orderNumber
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Failed to save order"
+    });
+  }
+});
+
+// ===============================
+// GET ALL ORDERS (ADMIN)
+// ===============================
+app.get("/api/orders", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const orders = await Order.find().sort({ createdAt: -1 });
+
+    res.json(orders);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Failed to fetch orders"
+    });
+  }
+});
+
+// ===============================
+// CONFIRM ORDER (ADMIN)
+// ===============================
+app.post("/api/orders/confirm/:id", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found"
+      });
+    }
+
+    order.status = "CONFIRMED";
+    await order.save();
+
+    res.json({
+      message: "Order confirmed"
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Failed to confirm order"
+    });
+  }
+});
 
 // ===============================
 // DATA FILE
@@ -152,6 +278,15 @@ app.get("/", (req, res) => {
 // ===============================
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+
+  })
+  .catch(err => {
+    console.error("❌ MongoDB error:", err);
+  });

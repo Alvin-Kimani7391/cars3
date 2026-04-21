@@ -205,11 +205,13 @@ app.get("/my-orders", async (req, res) => {
       });
     }
 
-    const query = email
-      ? { email }
-      : { phone };
+    const query = email ? { email } : { phone };
 
-    const orders = await Order.find(query).sort({ createdAt: -1 });
+    const orders = await Order.find(query)
+      .sort({ createdAt: -1 })
+      .select(
+        "orderNumber phone email total items location mpesaCode status statusHistory createdAt"
+      );
 
     res.json(orders);
 

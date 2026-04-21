@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // ===============================
-// ITEM SUB-SCHEMA (cart items)
+// ITEM SUB-SCHEMA
 // ===============================
 const itemSchema = new mongoose.Schema(
   {
@@ -62,17 +62,32 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
 
+  // ✅ FULL STATUS PIPELINE
   status: {
     type: String,
-    enum: ["PENDING", "CONFIRMED", "CANCELLED"],
+    enum: [
+      "PENDING",
+      "CONFIRMED",
+      "PROCESSING",
+      "SHIPPED",
+      "OUT_FOR_DELIVERY",
+      "DELIVERED"
+    ],
     default: "PENDING"
   },
 
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  // ✅ PREMIUM FEATURE (TRACKING HISTORY)
+  statusHistory: [
+    {
+      status: String,
+      date: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ]
+
+}, { timestamps: true });
 
 // ===============================
 export default mongoose.model("Order", orderSchema);

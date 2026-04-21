@@ -17,6 +17,16 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+const ORDER_STATUSES = [
+  "PENDING",
+  "CONFIRMED",
+  "PROCESSING",
+  "SHIPPED",
+  "OUT_FOR_DELIVERY",
+  "DELIVERED"
+];
+
 // ===============================
 // MIDDLEWARE
 // ===============================
@@ -68,15 +78,20 @@ app.post("/confirm-order", async (req, res) => {
     const orderNumber = generateOrderNumber();
 
     const newOrder = new Order({
-      orderNumber,
-      phone,
-      email,
-      total,
-      items,
-      location,
-      mpesaCode,
-      status: "PENDING"
-    });
+  orderNumber,
+  phone,
+  email,
+  total,
+  items,
+  location,
+  mpesaCode,
+  status: "PENDING",
+
+  // ✅ ADD THIS
+  statusHistory: [
+    { status: "PENDING" }
+  ]
+});
 
     await newOrder.save();
 
@@ -119,7 +134,10 @@ app.get("/api/orders", async (req, res) => {
 // ===============================
 // CONFIRM ORDER (ADMIN)
 // ===============================
-app.post("/api/orders/confirm/:id", async (req, res) => {
+// ===============================
+// UPDATE ORDER STATUS (ADMIN)
+// ===============================
+app.put("/api/orders/status/:id", async (req, res) => {
   try {
     const key = req.headers["admin-key"];
 
@@ -127,25 +145,77 @@ app.post("/api/orders/confirm/:id", async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
+    const { status } = req.body;
+
+    if (!ORDER_STATUSES.includes(status)) {
+      return res.status(400).json({
+        error: "Invalid status value"
+      });
+    }
+
     const order = await Order.findById(req.params.id);
 
     if (!order) {
       return res.status(404).json({
-        message: "Order not found"
+        error: "Order not found"
       });
     }
 
-    order.status = "CONFIRMED";
-    await order.save();
+    // ✅ enforce forward movement only
+    const currentIndex = ORDER_STATUSES.indexOf(order.status);
+    const newIndex = ORDER_STATUSES.indexOf(status);
+
+    if (newIndex < currentIndex) {
+      return res.status(400).json({
+        error: "Cannot move order backwards"
+      });
+    }
+
+    order.status = status;
+
+// ✅ save history
+order.statusHistory.push({
+  status: status,
+  date: new Date()
+});
+
+await order.save();
 
     res.json({
-      message: "Order confirmed"
+      message: "Order status updated successfully",
+      status: order.status
     });
 
   } catch (err) {
     console.error(err);
     res.status(500).json({
-      error: "Failed to confirm order"
+      error: "Failed to update status"
+    });
+  }
+});
+
+
+// ===============================
+// TRACK ORDER (PUBLIC)
+// ===============================
+app.get("/track-order/:orderNumber", async (req, res) => {
+  try {
+    const order = await Order.findOne({
+      orderNumber: req.params.orderNumber
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        error: "Order not found"
+      });
+    }
+
+    res.json(order);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Failed to fetch order"
     });
   }
 });

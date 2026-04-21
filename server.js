@@ -195,6 +195,32 @@ await order.save();
 });
 
 
+app.get("/my-orders", async (req, res) => {
+  try {
+    const { email, phone } = req.query;
+
+    if (!email && !phone) {
+      return res.status(400).json({
+        error: "Email or phone required"
+      });
+    }
+
+    const query = email
+      ? { email }
+      : { phone };
+
+    const orders = await Order.find(query).sort({ createdAt: -1 });
+
+    res.json(orders);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Failed to fetch orders"
+    });
+  }
+});
+
 // ===============================
 // TRACK ORDER (PUBLIC)
 // ===============================

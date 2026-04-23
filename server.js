@@ -39,6 +39,42 @@ function formatEmailItems(items) {
   }).join("");
 }
 
+
+function statusEmailTemplate(order, newStatus) {
+  return `
+  <div style="font-family:Arial; background:#f6f7fb; padding:20px;">
+    <div style="max-width:600px; margin:auto; background:#fff; padding:20px; border-radius:10px;">
+
+      <h2 style="color:#ff6600;">Order Update</h2>
+
+      <p>Dear <strong>${order.name || "Customer"}</strong>,</p>
+
+      <p>Your order <strong>${order.orderNumber}</strong> status has been updated.</p>
+
+      <div style="padding:10px; background:#f1f1f1; border-radius:8px;">
+        <h3 style="margin:0;">New Status: ${newStatus}</h3>
+      </div>
+
+      <p style="margin-top:15px;">
+        You can track your order anytime using your order number.
+      </p>
+
+      <a href="https://cars4-ivory.vercel.app/trackorder.html"
+         style="display:inline-block; margin-top:15px; padding:10px 15px; background:#ff6600; color:#fff; text-decoration:none; border-radius:6px;">
+        Track Order
+      </a>
+
+      <hr style="margin:20px 0;">
+
+      <p style="font-size:12px; color:#777;">
+        Six Star Suppliers © ${new Date().getFullYear()}
+      </p>
+
+    </div>
+  </div>
+  `;
+}
+
 const ORDER_STATUSES = [
   "PENDING",
   "CONFIRMED",
@@ -81,6 +117,7 @@ function generateOrderNumber() {
 app.post("/confirm-order", async (req, res) => {
   try {
     const {
+      name,
       phone,
       email,
       total,
@@ -90,7 +127,7 @@ app.post("/confirm-order", async (req, res) => {
     } = req.body;
 
     // ✅ validation
-    if (!phone || !email || !total || !items || !mpesaCode) {
+    if (!name || !phone || !email || !total || !items || !mpesaCode) {
       return res.status(400).json({
         error: "Missing required fields"
       });
@@ -100,6 +137,7 @@ app.post("/confirm-order", async (req, res) => {
 
     const newOrder = new Order({
   orderNumber,
+  name,
   phone,
   email,
   total,
@@ -128,48 +166,90 @@ app.post("/confirm-order", async (req, res) => {
     await transporter.sendMail({
   from: `"Six Star Suppliers" <${process.env.EMAIL_USER}>`,
   to: email,
-  subject: `🧾 Order Confirmation - ${orderNumber}`,
+  subject: `Order Confirmation - ${orderNumber}`,
 
   html: `
-    <div style="font-family:Arial; padding:20px;">
-      <h2>Thank you for your order 🎉</h2>
+<div style="font-family:Arial, sans-serif; background:#f6f7fb; padding:20px;">
 
-      <p>Your order has been received and is being processed.</p>
+  <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
 
-      <h3>Order Number: ${orderNumber}</h3>
+    <!-- HEADER -->
+    <div style="background:linear-gradient(135deg,#ff6600,#ffb703); padding:20px; color:white; text-align:center;">
+      <h2 style="margin:0;">Six Star Suppliers</h2>
+      <p style="margin:5px 0 0;">Order Confirmation</p>
+    </div>
 
-      <table style="width:100%; border-collapse: collapse;">
-        <thead>
-          <tr>
-            <th align="left">Item</th>
-            <th align="left">Qty</th>
-            <th align="left">Price</th>
+    <!-- BODY -->
+    <div style="padding:20px; color:#333;">
+
+      <p style="font-size:16px;">
+        Dear <strong>${order.name || "Customer"}</strong>,
+      </p>
+
+      <p>Thank you for your order 🎉.</p>
+
+      <p><strong>Order Number:</strong> ${orderNumber}</p>
+
+      <hr style="border:none; border-top:1px solid #eee; margin:15px 0;">
+
+      <!-- ITEMS -->
+      <h3 style="margin-bottom:10px;">Your Items</h3>
+
+      <table style="width:100%; border-collapse:collapse;">
+
+        ${items.map(item => {
+          const image = Array.isArray(item.image) ? item.image[0] : item.image;
+
+          return `
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:10px; width:80px;">
+              <img src="${image}" style="width:70px; height:70px; object-fit:cover; border-radius:8px;">
+            </td>
+
+            <td style="padding:10px;">
+              <strong>${item.make} ${item.model}</strong><br>
+              Qty: ${item.qty}
+            </td>
+
+            <td style="padding:10px; text-align:right;">
+              <strong>KES ${(item.price * item.qty).toLocaleString()}</strong>
+            </td>
           </tr>
-        </thead>
+          `;
+        }).join("")}
 
-        <tbody>
-          ${itemsHTML}
-        </tbody>
       </table>
 
-      <hr>
+      <!-- TOTAL -->
+      <div style="margin-top:15px; text-align:right;">
+        <h3>Total: KES ${total.toLocaleString()}</h3>
+        <p style="color:#777;">Delivery: ${location}</p>
+      </div>
 
-      <p><strong>Total:</strong> KES ${total.toLocaleString()}</p>
-      <p><strong>Delivery:</strong> ${location}</p>
+      <!-- TRACK BUTTON -->
+      <div style="text-align:center; margin-top:20px;">
+        <a href="https://cars4-ivory.vercel.app/trackorder.html?order=${orderNumber}"
+           style="background:linear-gradient(135deg,#ff6600,#ffb703);
+                  color:white;
+                  padding:12px 20px;
+                  text-decoration:none;
+                  border-radius:8px;
+                  display:inline-block;">
+          Track Your Order
+        </a>
+      </div>
 
-      <br>
-
-      <p>You can track your order anytime using your order number.</p>
-
-      <a href="https://your-site.com/trackorder.html">
-  Track your order
-</a>
-
-      <p style="margin-top:20px;">
-        <strong>Six Star Suppliers</strong>
-      </p>
     </div>
-  `
+
+    <!-- FOOTER -->
+    <div style="background:#f1f1f1; padding:15px; text-align:center; font-size:12px; color:#666;">
+      © ${new Date().getFullYear()} Six Star Suppliers • All rights reserved
+    </div>
+
+  </div>
+
+</div>
+`
 });} catch (emailErr) {
   console.error("Email failed:", emailErr);
 }
@@ -259,6 +339,18 @@ await order.save();
       message: "Order status updated successfully",
       status: order.status
     });
+
+    // SEND EMAIL (IMPORTANT PART)
+try {
+  await transporter.sendMail({
+    from: `"Six Star Suppliers" <${process.env.EMAIL_USER}>`,
+    to: order.email,
+    subject: `Order Update - ${order.orderNumber}`,
+    html: statusEmailTemplate(order, status)
+  });
+} catch (emailErr) {
+  console.error("Status email failed:", emailErr);
+}
 
   } catch (err) {
     console.error(err);

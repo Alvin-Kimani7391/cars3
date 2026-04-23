@@ -28,6 +28,12 @@ const orderSchema = new mongoose.Schema({
     unique: true
   },
 
+name: {
+  type: String,
+  required: true,
+  trim: true
+},
+
   phone: {
     type: String,
     required: true,

@@ -6,6 +6,7 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import fs from "fs";
+import nodemailer from "nodemailer";
 
 import { fileURLToPath } from "url";
 
@@ -17,6 +18,26 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+function formatEmailItems(items) {
+  return items.map(item => {
+    return `
+      <tr>
+        <td>${item.make} ${item.model}</td>
+        <td>${item.qty}</td>
+        <td>KES ${(item.price * item.qty).toLocaleString()}</td>
+      </tr>
+    `;
+  }).join("");
+}
 
 const ORDER_STATUSES = [
   "PENDING",
@@ -95,10 +116,63 @@ app.post("/confirm-order", async (req, res) => {
 
     await newOrder.save();
 
+    const itemsHTML = formatEmailItems(items);
+
+
     res.json({
       message: "Order placed successfully",
       orderNumber
     });
+
+    try{
+    await transporter.sendMail({
+  from: `"Six Star Suppliers" <${process.env.EMAIL_USER}>`,
+  to: email,
+  subject: `🧾 Order Confirmation - ${orderNumber}`,
+
+  html: `
+    <div style="font-family:Arial; padding:20px;">
+      <h2>Thank you for your order 🎉</h2>
+
+      <p>Your order has been received and is being processed.</p>
+
+      <h3>Order Number: ${orderNumber}</h3>
+
+      <table style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th align="left">Item</th>
+            <th align="left">Qty</th>
+            <th align="left">Price</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${itemsHTML}
+        </tbody>
+      </table>
+
+      <hr>
+
+      <p><strong>Total:</strong> KES ${total.toLocaleString()}</p>
+      <p><strong>Delivery:</strong> ${location}</p>
+
+      <br>
+
+      <p>You can track your order anytime using your order number.</p>
+
+      <a href="https://your-site.com/trackorder.html">
+  Track your order
+</a>
+
+      <p style="margin-top:20px;">
+        <strong>Six Star Suppliers</strong>
+      </p>
+    </div>
+  `
+});} catch (emailErr) {
+  console.error("Email failed:", emailErr);
+}
 
   } catch (err) {
     console.error(err);

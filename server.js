@@ -183,7 +183,7 @@ app.post("/confirm-order", async (req, res) => {
     <div style="padding:20px; color:#333;">
 
       <p style="font-size:16px;">
-        Dear <strong>${order.name || "Customer"}</strong>,
+        Dear <strong>${name || "Customer"}</strong>,
       </p>
 
       <p>Thank you for your order 🎉.</p>
@@ -197,7 +197,7 @@ app.post("/confirm-order", async (req, res) => {
 
       <table style="width:100%; border-collapse:collapse;">
 
-        ${items.map(item => {
+        ${(items || []).map(item =>{
           const image = Array.isArray(item.image) ? item.image[0] : item.image;
 
           return `

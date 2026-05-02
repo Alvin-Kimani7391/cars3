@@ -44,7 +44,8 @@ name: {
     type: String,
     required: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    match: [/^\S+@\S+\.\S+$/, "Please use a valid email"]
   },
 
   location: {
@@ -67,6 +68,18 @@ name: {
     type: [itemSchema],
     required: true
   },
+
+   // ✅ NEW FIELD
+  agentCode: {
+    type: String,
+    default: null,
+    index: true
+  },
+
+  agentName: {
+  type: String,
+  default: null
+},
 
   // ✅ FULL STATUS PIPELINE
   status: {
@@ -94,6 +107,6 @@ name: {
   ]
 
 }, { timestamps: true });
-
+orderSchema.index({ agentCode: 1, createdAt: -1 });
 // ===============================
 export default mongoose.model("Order", orderSchema);

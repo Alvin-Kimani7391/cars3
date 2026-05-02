@@ -7,6 +7,7 @@ import path from "path";
 import cors from "cors";
 import fs from "fs";
 import nodemailer from "nodemailer";
+import Agent from "./models/Agent.js";
 
 import { fileURLToPath } from "url";
 
@@ -123,39 +124,51 @@ app.post("/confirm-order", async (req, res) => {
       total,
       items,
       location,
-      mpesaCode
+      mpesaCode,
+       agentCode  // ✅ ADD THIS
     } = req.body;
 
-    // ✅ validation
+    // ✅ BASIC VALIDATION FIRST
     if (!name || !phone || !email || !total || !items || !mpesaCode) {
       return res.status(400).json({
         error: "Missing required fields"
       });
     }
+let agentName = null;
+let cleanAgentCode = null;
+
+if (typeof agentCode === "string" && agentCode.trim() !== "") {
+  cleanAgentCode = agentCode.toUpperCase().trim();
+
+  const agent = await Agent.findOne({ code: cleanAgentCode });
+
+  if (!agent) {
+    return res.status(400).json({
+      error: "Invalid agent code"
+    });
+  }
+
+  agentName = agent.name;
+}
 
     const orderNumber = generateOrderNumber();
 
     const newOrder = new Order({
-  orderNumber,
-  name,
-  phone,
-  email,
-  total,
-  items,
-  location,
-  mpesaCode,
-  status: "PENDING",
-
-  // ✅ ADD THIS
-  statusHistory: [
-    { status: "PENDING" }
-  ]
-});
+      orderNumber,
+      name,
+      phone,
+      email,
+      total,
+      items,
+      location,
+      mpesaCode,
+       agentCode: cleanAgentCode || null,
+      agentName,
+      status: "PENDING",
+      statusHistory: [{ status: "PENDING" }]
+    });
 
     await newOrder.save();
-
-    const itemsHTML = formatEmailItems(items);
-
 
     res.json({
       message: "Order placed successfully",
@@ -411,6 +424,116 @@ app.get("/track-order/:orderNumber", async (req, res) => {
     res.status(500).json({
       error: "Failed to fetch order"
     });
+  }
+});
+
+
+function generateAgentCode(count) {
+  return "PF" + (100 + count);
+}
+
+
+
+app.post("/api/agents", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { name } = req.body;
+
+    const lastAgent = await Agent.findOne().sort({ createdAt: -1 });
+
+let nextNumber = 101;
+
+if (lastAgent) {
+  const num = parseInt(lastAgent.code.replace("PF", ""));
+  nextNumber = num + 1;
+}
+
+const code = "PF" + nextNumber;
+
+
+    const agent = new Agent({ name, code });
+    await agent.save();
+
+    res.json(agent);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create agent" });
+  }
+});
+
+
+app.get("/api/agents", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const agents = await Agent.find().sort({ createdAt: -1 });
+
+    res.json(agents);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch agents" });
+  }
+});
+
+app.get("/api/agents/:code/orders", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const code = req.params.code.toUpperCase();
+
+const orders = await Order.find({
+  agentCode: code
+});
+
+    // 🔥 premium stats
+    const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
+
+const COMMISSION_RATE = 0.08;
+const totalCommission = totalSales * COMMISSION_RATE;
+
+    res.json({
+  totalOrders: orders.length,
+  totalSales,
+  totalCommission,
+  orders
+});
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch agent orders" });
+  }
+});
+
+
+app.get("/api/agents/leaderboard", async (req, res) => {
+  try {
+    const data = await Order.aggregate([
+  { $match: { agentCode: { $ne: null } } },
+  {
+    $group: {
+      _id: {
+        code: "$agentCode",
+        name: { $ifNull: ["$agentName", "Unknown"] }
+      },
+      totalSales: { $sum: "$total" },
+      totalOrders: { $sum: 1 }
+    }
+  },
+  { $sort: { totalSales: -1 } }
+]);
+    res.json(data);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed leaderboard" });
   }
 });
 

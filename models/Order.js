@@ -44,8 +44,8 @@ name: {
     type: String,
     required: true,
     lowercase: true,
-    trim: true,
-    match: [/^\S+@\S+\.\S+$/, "Please use a valid email"]
+    trim: true
+    
   },
 
   location: {

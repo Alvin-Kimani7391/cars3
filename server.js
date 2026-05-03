@@ -433,6 +433,15 @@ function generateAgentCode(count) {
 }
 
 
+app.get("/api/public/agents", async (req, res) => {
+  try {
+    const agents = await Agent.find().select("name code");
+    res.json(agents);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch agents" });
+  }
+});
+
 
 app.post("/api/agents", async (req, res) => {
   try {

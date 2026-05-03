@@ -241,7 +241,7 @@ if (typeof agentCode === "string" && agentCode.trim() !== "") {
 
       <!-- TRACK BUTTON -->
       <div style="text-align:center; margin-top:20px;">
-        <a href="https://cars4-ivory.vercel.app/trackorder.html?order=${orderNumber}"
+        <a href="https://cars4-ivory.vercel.app/trackorder.html"
            style="background:linear-gradient(135deg,#ff6600,#ffb703);
                   color:white;
                   padding:12px 20px;
@@ -525,22 +525,35 @@ const totalCommission = totalSales * COMMISSION_RATE;
 
 app.get("/api/agents/leaderboard", async (req, res) => {
   try {
-    const data = await Order.aggregate([
-  { $match: { agentCode: { $ne: null } } },
-  {
-    $group: {
-      _id: {
-        code: "$agentCode",
-        name: { $ifNull: ["$agentName", "Unknown"] }
-      },
-      totalSales: { $sum: "$total" },
-      totalOrders: { $sum: 1 }
-    }
-  },
-  { $sort: { totalSales: -1 } }
-]);
-    res.json(data);
+    const COMMISSION_RATE = 0.08;
 
+    const data = await Order.aggregate([
+      {
+        $match: { agentCode: { $ne: null } }
+      },
+      {
+        $group: {
+          _id: {
+            code: "$agentCode",
+            name: { $ifNull: ["$agentName", "Unknown"] }
+          },
+          totalSales: { $sum: "$total" },
+          totalOrders: { $sum: 1 }
+        }
+      },
+      {
+        $addFields: {
+          totalCommission: {
+            $multiply: ["$totalSales", COMMISSION_RATE]
+          }
+        }
+      },
+      {
+        $sort: { totalSales: -1 }
+      }
+    ]);
+
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: "Failed leaderboard" });
   }

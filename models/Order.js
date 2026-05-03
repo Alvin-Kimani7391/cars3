@@ -88,7 +88,7 @@ isArchived: {
 deletedAt: {
   type: Date,
   default: null
-}
+},
 
   // ✅ FULL STATUS PIPELINE
   status: {

@@ -779,6 +779,11 @@ app.get("/product/:id", (req, res) => {
     res.status(500).send("Server error");
   }
 });
+//
+
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 // ===============================
 // HEALTH CHECK (RENDER REQUIRED)

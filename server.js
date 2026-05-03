@@ -528,9 +528,12 @@ app.get("/api/agents/leaderboard", async (req, res) => {
     const COMMISSION_RATE = 0.08;
 
     const data = await Order.aggregate([
-      {
-        $match: { agentCode: { $ne: null } }
-      },
+  {
+    $match: {
+      agentCode: { $ne: null },
+      isArchived: { $ne: true }
+    }
+  },
       {
         $group: {
           _id: {
@@ -558,6 +561,102 @@ app.get("/api/agents/leaderboard", async (req, res) => {
     res.status(500).json({ error: "Failed leaderboard" });
   }
 });
+
+app.put("/api/orders/archive/:id", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    order.isArchived = true;
+    order.deletedAt = new Date();
+
+    await order.save();
+
+    res.json({ message: "Order archived" });
+
+  } catch (err) {
+    res.status(500).json({ error: "Archive failed" });
+  }
+});
+
+
+
+app.get("/api/orders/archived", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const orders = await Order.find({ isArchived: true }).sort({ deletedAt: -1 });
+
+    res.json(orders);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch archived orders" });
+  }
+});
+
+
+
+app.put("/api/orders/restore/:id", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    order.isArchived = false;
+    order.deletedAt = null;
+
+    await order.save();
+
+    res.json({ message: "Order restored" });
+
+  } catch (err) {
+    res.status(500).json({ error: "Restore failed" });
+  }
+});
+
+
+
+app.put("/api/orders/bulk-archive", async (req, res) => {
+  try {
+    const key = req.headers["admin-key"];
+    if (key !== process.env.ADMIN_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { ids } = req.body;
+
+    await Order.updateMany(
+      { _id: { $in: ids } },
+      { $set: { isArchived: true, deletedAt: new Date() } }
+    );
+
+    res.json({ message: "Bulk archive successful" });
+
+  } catch (err) {
+    res.status(500).json({ error: "Bulk archive failed" });
+  }
+});
+
+
+
 
 // ===============================
 // DATA FILE

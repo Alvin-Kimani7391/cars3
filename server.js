@@ -286,7 +286,8 @@ app.get("/api/orders", async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const orders = await Order.find({ isArchived: { $ne: true } })
+  .sort({ createdAt: -1 });
 
     res.json(orders);
 

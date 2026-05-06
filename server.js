@@ -60,36 +60,72 @@ function formatEmailItems(items) {
 
 function statusEmailTemplate(order, newStatus) {
   return `
-  <div style="font-family:Arial; background:#f6f7fb; padding:20px;">
-    <div style="max-width:600px; margin:auto; background:#fff; padding:20px; border-radius:10px;">
+  <div style="background:#f6f7fb;padding:30px 10px;font-family:Arial,Helvetica,sans-serif;">
 
-      <h2 style="color:#ff6600;">Order Update</h2>
+  <div style="max-width:600px;margin:auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.08);">
 
-      <p>Dear <strong>${order.name || "Customer"}</strong>,</p>
+    <!-- HEADER -->
+    <div style="background:linear-gradient(135deg,#ff6600,#ffb703);padding:22px;text-align:center;color:#fff;">
+      <h2 style="margin:0;font-size:20px;">Order Update</h2>
+      <p style="margin:6px 0 0;font-size:13px;opacity:0.9;">
+        Your order status has changed
+      </p>
+    </div>
 
-      <p>Your order <strong>${order.orderNumber}</strong> status has been updated.</p>
+    <!-- BODY -->
+    <div style="padding:25px;color:#333;">
 
-      <div style="padding:10px; background:#f1f1f1; border-radius:8px;">
-        <h3 style="margin:0;">New Status: ${newStatus}</h3>
-      </div>
-
-      <p style="margin-top:15px;">
-        You can track your order anytime using your order number.
+      <p style="font-size:15px;margin:0 0 10px;">
+        Hi <strong>${order.name || "Customer"}</strong>,
       </p>
 
-      <a href="https://cars4-ivory.vercel.app/trackorder.html"
-         style="display:inline-block; margin-top:15px; padding:10px 15px; background:#ff6600; color:#fff; text-decoration:none; border-radius:6px;">
-        Track Order
-      </a>
+      <p style="margin:0 0 15px;color:#555;line-height:1.5;">
+        We’ve updated the status of your order <strong>${order.orderNumber}</strong>.
+      </p>
 
-      <hr style="margin:20px 0;">
+      <!-- STATUS CARD -->
+      <div style="background:#f9f9f9;border:1px solid #eee;padding:15px;border-radius:12px;text-align:center;margin:18px 0;">
 
-      <p style="font-size:12px; color:#777;">
-        Six Star Suppliers © ${new Date().getFullYear()}
+        <p style="margin:0;font-size:12px;color:#777;">
+          CURRENT STATUS
+        </p>
+
+        <h2 style="margin:6px 0 0;color:#ff6600;font-size:20px;letter-spacing:0.5px;">
+          ${newStatus}
+        </h2>
+
+      </div>
+
+      <!-- INFO -->
+      <p style="font-size:14px;color:#555;line-height:1.5;margin:0;">
+        You can track your order anytime to see real-time updates and delivery progress.
+      </p>
+
+      <!-- CTA -->
+      <div style="text-align:center;margin-top:22px;">
+        <a href="https://cars4-ivory.vercel.app/trackorder.html"
+          style="display:inline-block;padding:13px 22px;
+          background:linear-gradient(135deg,#ff6600,#ffb703);
+          color:#fff;text-decoration:none;border-radius:10px;
+          font-weight:600;">
+          Track Order
+        </a>
+      </div>
+
+      <!-- NOTE -->
+      <p style="text-align:center;font-size:12px;color:#888;margin-top:18px;">
+        You’ll receive another update when your order progresses.
       </p>
 
     </div>
+
+    <!-- FOOTER -->
+    <div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777;">
+      © ${new Date().getFullYear()} Six Star Suppliers • All rights reserved
+    </div>
+
   </div>
+</div>
   `;
 }
 
@@ -197,44 +233,102 @@ if (typeof agentCode === "string" && agentCode.trim() !== "") {
   to: email,
   subject: `Order Confirmation - ${orderNumber}`,
   html: `
-  <div style="font-family:Arial, sans-serif; background:#f6f7fb; padding:20px;">
+<div style="background:#f6f7fb;padding:30px 10px;font-family:Arial,Helvetica,sans-serif;">
 
-    <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:12px; overflow:hidden;">
+  <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 12px 35px rgba(0,0,0,0.08);">
 
-      <div style="background:linear-gradient(135deg,#ff6600,#ffb703); padding:20px; color:white; text-align:center;">
-        <h2>Six Star Suppliers</h2>
-        <p>Order Confirmation</p>
-      </div>
-
-      <div style="padding:20px;">
-        <p>Dear <b>${name}</b>,</p>
-        <p>Thank you for your order 🎉</p>
-
-        <p><b>Order Number:</b> ${orderNumber}</p>
-
-        <h3>Your Items</h3>
-
-        <table style="width:100%">
-          ${(items || []).map(item => `
-            <tr>
-              <td>${item.make} ${item.model}</td>
-              <td>Qty: ${item.qty}</td>
-              <td>KES ${item.price * item.qty}</td>
-            </tr>
-          `).join("")}
-        </table>
-
-        <h3>Total: KES ${total.toLocaleString()}</h3>
-
-        <a href="https://cars4-ivory.vercel.app/trackorder.html"
-           style="display:inline-block; margin-top:15px; padding:10px 15px; background:#ff6600; color:#fff; text-decoration:none; border-radius:6px;">
-          Track Order
-        </a>
-
-      </div>
+    <!-- HEADER -->
+    <div style="background:linear-gradient(135deg,#ff6600,#ffb703);padding:25px;text-align:center;color:#fff;">
+      <h1 style="margin:0;font-size:22px;letter-spacing:0.5px;">Six Star Suppliers</h1>
+      <p style="margin:6px 0 0;font-size:14px;opacity:0.9;">Order Confirmation</p>
     </div>
+
+    <!-- BODY -->
+    <div style="padding:25px;color:#333;">
+
+      <p style="font-size:16px;margin:0 0 10px;">
+        Hi <strong>${name || "Customer"}</strong>,
+      </p>
+
+      <p style="margin:0 0 15px;color:#555;line-height:1.5;">
+        Thank you for your order. We’ve received it and are now processing it. You’ll be updated at every stage.
+      </p>
+
+      <!-- ORDER INFO -->
+      <div style="background:#f9f9f9;padding:12px 15px;border-radius:10px;margin:15px 0;">
+        <p style="margin:0;font-size:14px;">
+          <strong>Order Number:</strong> ${orderNumber}
+        </p>
+      </div>
+
+      <!-- ITEMS -->
+      <h3 style="margin:20px 0 10px;font-size:16px;">Your Items</h3>
+
+      <table style="width:100%;border-collapse:collapse;">
+
+        ${(items || []).map(item => {
+          const image = Array.isArray(item.image) ? item.image[0] : item.image;
+
+          return `
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:12px;width:80px;">
+              <img src="${image}"
+                style="width:70px;height:70px;object-fit:cover;border-radius:10px;border:1px solid #eee;">
+            </td>
+
+            <td style="padding:12px;vertical-align:top;">
+              <div style="font-size:14px;font-weight:600;color:#222;">
+                ${item.make} ${item.model}
+              </div>
+              <div style="font-size:13px;color:#777;margin-top:4px;">
+                Quantity: ${item.qty}
+              </div>
+            </td>
+
+            <td style="padding:12px;text-align:right;vertical-align:top;">
+              <div style="font-size:14px;font-weight:600;color:#000;">
+                KES ${(item.price * item.qty).toLocaleString()}
+              </div>
+            </td>
+          </tr>
+          `;
+        }).join("")}
+
+      </table>
+
+      <!-- TOTAL -->
+      <div style="margin-top:20px;text-align:right;">
+        <p style="margin:0;font-size:13px;color:#777;">Delivery Location: ${location}</p>
+        <h2 style="margin:8px 0 0;font-size:18px;color:#111;">
+          Total: KES ${total.toLocaleString()}
+        </h2>
+      </div>
+
+      <!-- CTA BUTTON -->
+      <div style="text-align:center;margin-top:25px;">
+        <a href="https://cars4-ivory.vercel.app/trackorder.html"
+          style="display:inline-block;padding:13px 22px;border-radius:10px;
+          background:linear-gradient(135deg,#ff6600,#ffb703);
+          color:#fff;text-decoration:none;font-weight:600;">
+          Track Your Order
+        </a>
+      </div>
+
+      <!-- NOTE -->
+      <p style="text-align:center;font-size:12px;color:#888;margin-top:18px;">
+        You will receive updates as your order status changes.
+      </p>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777;">
+      © ${new Date().getFullYear()} Six Star Suppliers • All rights reserved
+    </div>
+
   </div>
-  `
+</div>
+`
 });} catch (emailErr) {
   console.error("Email failed:", emailErr);
 }

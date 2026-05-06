@@ -25,18 +25,24 @@ const __dirname = path.dirname(__filename);
 
 async function sendEmail({ to, subject, html }) {
   try {
-    await sgMail.send({
+    const msg = {
       to,
       from: process.env.EMAIL_FROM,
       subject,
       html
-    });
+    };
 
-    console.log("Email sent to:", to);
+    const response = await sgMail.send(msg);
+
+    console.log("SENDGRID STATUS:", response[0].statusCode); // should be 202
+
   } catch (err) {
-    console.error("Email failed:", err.response?.body || err.message);
+    console.error("FULL SENDGRID ERROR:");
+    console.error(JSON.stringify(err.response?.body, null, 2));
   }
 }
+
+
 
 
 function formatEmailItems(items) {
@@ -623,6 +629,20 @@ app.put("/api/orders/bulk-archive", async (req, res) => {
 
 
 
+app.get("/test-email", async (req, res) => {
+  try {
+    await sendEmail({
+      to: "your-email@gmail.com",
+      subject: "Test Email",
+      html: "<h1>Hello from server</h1>"
+    });
+
+    res.send("Email sent");
+  } catch (err) {
+    console.log(err);
+    res.send("Failed");
+  }
+});
 
 // ===============================
 // DATA FILE

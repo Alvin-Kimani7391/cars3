@@ -6,11 +6,15 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import fs from "fs";
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
+
+
 import Agent from "./models/Agent.js";
 
 import { fileURLToPath } from "url";
 
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const app = express();
 
 // ===============================
@@ -19,14 +23,21 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+async function sendEmail({ to, subject, html }) {
+  try {
+    await sgMail.send({
+      to,
+      from: process.env.EMAIL_FROM,
+      subject,
+      html
+    });
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    console.log("Email sent to:", to);
+  } catch (err) {
+    console.error("Email failed:", err.response?.body || err.message);
   }
-});
+}
+
 
 function formatEmailItems(items) {
   return items.map(item => {
@@ -176,93 +187,48 @@ if (typeof agentCode === "string" && agentCode.trim() !== "") {
     });
 
     try{
-    await transporter.sendMail({
-  from: `"Six Star Suppliers" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
   to: email,
   subject: `Order Confirmation - ${orderNumber}`,
-
   html: `
-<div style="font-family:Arial, sans-serif; background:#f6f7fb; padding:20px;">
+  <div style="font-family:Arial, sans-serif; background:#f6f7fb; padding:20px;">
 
-  <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+    <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:12px; overflow:hidden;">
 
-    <!-- HEADER -->
-    <div style="background:linear-gradient(135deg,#ff6600,#ffb703); padding:20px; color:white; text-align:center;">
-      <h2 style="margin:0;">Six Star Suppliers</h2>
-      <p style="margin:5px 0 0;">Order Confirmation</p>
-    </div>
+      <div style="background:linear-gradient(135deg,#ff6600,#ffb703); padding:20px; color:white; text-align:center;">
+        <h2>Six Star Suppliers</h2>
+        <p>Order Confirmation</p>
+      </div>
 
-    <!-- BODY -->
-    <div style="padding:20px; color:#333;">
+      <div style="padding:20px;">
+        <p>Dear <b>${name}</b>,</p>
+        <p>Thank you for your order 🎉</p>
 
-      <p style="font-size:16px;">
-        Dear <strong>${name || "Customer"}</strong>,
-      </p>
+        <p><b>Order Number:</b> ${orderNumber}</p>
 
-      <p>Thank you for your order 🎉.</p>
+        <h3>Your Items</h3>
 
-      <p><strong>Order Number:</strong> ${orderNumber}</p>
+        <table style="width:100%">
+          ${(items || []).map(item => `
+            <tr>
+              <td>${item.make} ${item.model}</td>
+              <td>Qty: ${item.qty}</td>
+              <td>KES ${item.price * item.qty}</td>
+            </tr>
+          `).join("")}
+        </table>
 
-      <hr style="border:none; border-top:1px solid #eee; margin:15px 0;">
-
-      <!-- ITEMS -->
-      <h3 style="margin-bottom:10px;">Your Items</h3>
-
-      <table style="width:100%; border-collapse:collapse;">
-
-        ${(items || []).map(item =>{
-          const image = Array.isArray(item.image) ? item.image[0] : item.image;
-
-          return `
-          <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:10px; width:80px;">
-              <img src="${image}" style="width:70px; height:70px; object-fit:cover; border-radius:8px;">
-            </td>
-
-            <td style="padding:10px;">
-              <strong>${item.make} ${item.model}</strong><br>
-              Qty: ${item.qty}
-            </td>
-
-            <td style="padding:10px; text-align:right;">
-              <strong>KES ${(item.price * item.qty).toLocaleString()}</strong>
-            </td>
-          </tr>
-          `;
-        }).join("")}
-
-      </table>
-
-      <!-- TOTAL -->
-      <div style="margin-top:15px; text-align:right;">
         <h3>Total: KES ${total.toLocaleString()}</h3>
-        <p style="color:#777;">Delivery: ${location}</p>
-      </div>
 
-      <!-- TRACK BUTTON -->
-      <div style="text-align:center; margin-top:20px;">
         <a href="https://cars4-ivory.vercel.app/trackorder.html"
-           style="background:linear-gradient(135deg,#ff6600,#ffb703);
-                  color:white;
-                  padding:12px 20px;
-                  text-decoration:none;
-                  border-radius:8px;
-                  display:inline-block;">
-          Track Your Order
+           style="display:inline-block; margin-top:15px; padding:10px 15px; background:#ff6600; color:#fff; text-decoration:none; border-radius:6px;">
+          Track Order
         </a>
+
       </div>
-
     </div>
-
-    <!-- FOOTER -->
-    <div style="background:#f1f1f1; padding:15px; text-align:center; font-size:12px; color:#666;">
-      © ${new Date().getFullYear()} Six Star Suppliers • All rights reserved
-    </div>
-
   </div>
-
-</div>
-`
+  `
 });} catch (emailErr) {
   console.error("Email failed:", emailErr);
 }
@@ -356,12 +322,11 @@ await order.save();
 
     // SEND EMAIL (IMPORTANT PART)
 try {
-  await transporter.sendMail({
-    from: `"Six Star Suppliers" <${process.env.EMAIL_USER}>`,
-    to: order.email,
-    subject: `Order Update - ${order.orderNumber}`,
-    html: statusEmailTemplate(order, status)
-  });
+  await sendEmail({
+  to: order.email,
+  subject: `Order Update - ${order.orderNumber}`,
+  html: statusEmailTemplate(order, status)
+});
 } catch (emailErr) {
   console.error("Status email failed:", emailErr);
 }

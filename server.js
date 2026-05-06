@@ -27,7 +27,10 @@ async function sendEmail({ to, subject, html }) {
   try {
     const msg = {
       to,
-      from: process.env.EMAIL_FROM,
+      from: {
+    email: process.env.EMAIL_FROM,
+    name: "Six Star Suppliers"
+  },
       subject,
       html
     };
@@ -103,7 +106,7 @@ function statusEmailTemplate(order, newStatus) {
 
       <!-- CTA -->
       <div style="text-align:center;margin-top:22px;">
-        <a href="https://cars4-ivory.vercel.app/trackorder.html"
+        <a href="car4-ivory.vercel.app/trackorder.html"
           style="display:inline-block;padding:13px 22px;
           background:linear-gradient(135deg,#ff6600,#ffb703);
           color:#fff;text-decoration:none;border-radius:10px;
@@ -230,6 +233,10 @@ if (typeof agentCode === "string" && agentCode.trim() !== "") {
 
     try{
     await sendEmail({
+  from: {
+    email: process.env.EMAIL_FROM,
+    name: "Six Star Suppliers"
+  },
   to: email,
   subject: `Order Confirmation - ${orderNumber}`,
   html: `

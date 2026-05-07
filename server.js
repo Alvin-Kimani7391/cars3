@@ -274,7 +274,17 @@ if (typeof agentCode === "string" && agentCode.trim() !== "") {
       <table style="width:100%;border-collapse:collapse;">
 
         ${(items || []).map(item => {
-          const image = Array.isArray(item.image) ? item.image[0] : item.image;
+          let image = Array.isArray(item.image) ? item.image[0] : item.image;
+
+if (image) {
+  image = image.replace(/^\/+/, "");
+
+  if (!image.startsWith("http")) {
+    image = `https://cars3-158h.onrender.com/${image}`;
+  }
+
+  image += `?v=${Date.now()}`;
+}
 
           return `
           <tr style="border-bottom:1px solid #eee;">
@@ -313,7 +323,7 @@ if (typeof agentCode === "string" && agentCode.trim() !== "") {
 
       <!-- CTA BUTTON -->
       <div style="text-align:center;margin-top:25px;">
-        <a href="https://cars4-ivory.vercel.app/trackorder.html"
+        <a href="car4-ivory.vercel.app/trackorder.html"
           style="display:inline-block;padding:13px 22px;border-radius:10px;
           background:linear-gradient(135deg,#ff6600,#ffb703);
           color:#fff;text-decoration:none;font-weight:600;">
@@ -809,12 +819,26 @@ app.get("/product/:id", (req, res) => {
 
     // ✅ Ensure image is valid & absolute
     let image = Array.isArray(product.image)
-      ? product.image[0]
-      : product.image;
+  ? product.image[0]
+  : product.image;
 
-    if (!image.startsWith("http")) {
-      image = `https://cars3-158h.onrender.com/${image}`;
-    }
+// fallback image (VERY important)
+if (!image) {
+  image = "https://via.placeholder.com/300";
+} else {
+  image = String(image).trim();
+
+  // remove leading slashes safely
+  image = image.replace(/^\/+/, "");
+
+  // only prefix if not already absolute
+  if (!image.startsWith("http")) {
+    image = `https://cars3-158h.onrender.com/images/${image}`;
+  }
+
+  // optional cache bust (VERY useful for WhatsApp)
+  image += `?v=${Date.now()}`;
+}
 
     const title = `${product.make} ${product.model}`;
     const description = product.description || "View product details";

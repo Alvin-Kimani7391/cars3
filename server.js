@@ -280,8 +280,8 @@ if (image) {
   image = image.replace(/^\/+/, "");
 
   if (!image.startsWith("http")) {
-    image = `https://cars3-158h.onrender.com/${image}`;
-  }
+  image = `cars3-158h.onrender.com/images/${image}`;
+}
 
   image += `?v=${Date.now()}`;
 }
@@ -841,7 +841,8 @@ if (!image) {
 }
 
     const title = `${product.make} ${product.model}`;
-    const description = product.description || "View product details";
+    
+    const price = product.price ? `KES ${product.price.toLocaleString()}` : "Price on request";
 
     const frontendURL = `https://car4-ivory.vercel.app/carstv.html?id=${product.id}`;
     const backendURL = `https://cars3-158h.onrender.com/product/${product.id}`;

@@ -10,12 +10,16 @@ import sgMail from "@sendgrid/mail";
 
 
 import Agent from "./models/Agent.js";
+import productRoutes from "./routes/products.js";
 
 import { fileURLToPath } from "url";
 
 
+
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const app = express();
+app.use("/api/products", productRoutes);
 
 // ===============================
 // FIX FOR ES MODULE PATH

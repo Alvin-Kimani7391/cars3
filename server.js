@@ -19,7 +19,7 @@ import { fileURLToPath } from "url";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const app = express();
-app.use("/api/products", productRoutes);
+
 
 // ===============================
 // FIX FOR ES MODULE PATH
@@ -164,7 +164,7 @@ app.use("/images", express.static(path.join(__dirname, "images2")));
 
 
 import Order from "./models/Order.js";
-
+app.use("/api/products", productRoutes);
 // ===============================
 // GENERATE ORDER NUMBER
 // ===============================

@@ -157,7 +157,7 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
-app.use(cors());
+
 
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "images2")));

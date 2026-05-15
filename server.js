@@ -142,6 +142,76 @@ function statusEmailTemplate(order, newStatus) {
   `;
 }
 
+function agentWelcomeEmail(name, code) {
+  return `
+<div style="background:#f6f7fb;padding:30px 10px;font-family:Arial,Helvetica,sans-serif;">
+  <div style="max-width:600px;margin:auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+ 
+    <!-- HEADER -->
+    <div style="background:linear-gradient(135deg,#ff6600,#ffb703);padding:25px;text-align:center;color:#fff;">
+      <h1 style="margin:0;font-size:22px;">Six Star Suppliers</h1>
+      <p style="margin:6px 0 0;font-size:14px;opacity:0.9;">Agent Assignment Notice</p>
+    </div>
+ 
+    <!-- BODY -->
+    <div style="padding:30px;color:#333;line-height:1.7;">
+      <p style="font-size:15px;margin:0 0 15px;">
+        Dear <strong>${name}</strong>,
+      </p>
+ 
+      <p style="margin:0 0 15px;color:#555;">
+        We're pleased to officially assign your Agent Name and Code.
+        These details are essential for your operations, as they will be used to:
+      </p>
+ 
+      <ul style="color:#555;padding-left:20px;margin:0 0 20px;">
+        <li>Track all your referrals accurately</li>
+        <li>Ensure proper and timely commission payments</li>
+        <li>Identify and verify your activities within the system</li>
+      </ul>
+ 
+      <!-- DETAILS CARD -->
+      <div style="background:#fff8f0;border:2px solid #ff6600;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
+        <p style="margin:0 0 8px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;">
+          Your Assigned Details
+        </p>
+        <p style="margin:0 0 8px;font-size:16px;color:#333;">
+          <strong>Agent Name:</strong> ${name}
+        </p>
+        <p style="margin:0;font-size:22px;font-weight:bold;color:#ff6600;letter-spacing:2px;">
+          Agent Code: ${code}
+        </p>
+      </div>
+ 
+      <p style="margin:0 0 15px;color:#555;">
+        Please ensure that your Agent Code is used correctly in every referral and transaction.
+        This helps prevent delays, errors, or misallocation of commissions.
+      </p>
+ 
+      <p style="margin:0 0 15px;color:#555;">
+        If you experience any issues or need clarification on how to use your code,
+        don't hesitate to reach out. We're available to support you.
+      </p>
+ 
+      <p style="margin:0 0 5px;color:#555;">
+        Looking forward to seeing your progress and success.
+      </p>
+ 
+      <p style="margin:20px 0 0;color:#333;">
+        Best regards,<br>
+        <strong>SIX STAR SUPPLIERS</strong>
+      </p>
+    </div>
+ 
+    <!-- FOOTER -->
+    <div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777;">
+      © ${new Date().getFullYear()} Six Star Suppliers • All rights reserved
+    </div>
+ 
+  </div>
+</div>`;
+}
+
 const ORDER_STATUSES = [
   "PENDING",
   "CONFIRMED",
@@ -543,27 +613,44 @@ app.post("/api/agents", async (req, res) => {
     if (key !== process.env.ADMIN_KEY) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-
-    const { name } = req.body;
-
+ 
+    const { name, email, idNumber, location, whatsapp } = req.body;
+ 
+    // validation
+    if (!name || !email || !idNumber || !location || !whatsapp) {
+      return res.status(400).json({
+        error: "name, email, idNumber, location and whatsapp are all required"
+      });
+    }
+ 
+    // generate next agent code
     const lastAgent = await Agent.findOne().sort({ createdAt: -1 });
-
-let nextNumber = 101;
-
-if (lastAgent) {
-  const num = parseInt(lastAgent.code.replace("PF", ""));
-  nextNumber = num + 1;
-}
-
-const code = "PF" + nextNumber;
-
-
-    const agent = new Agent({ name, code });
+    let nextNumber = 101;
+    if (lastAgent) {
+      const num = parseInt(lastAgent.code.replace("PF", ""));
+      nextNumber = num + 1;
+    }
+    const code = "PF" + nextNumber;
+ 
+    const agent = new Agent({ name, email, idNumber, location, whatsapp, code });
     await agent.save();
-
+ 
     res.json(agent);
-
+ 
+    // send welcome email after response
+    try {
+      await sendEmail({
+        to: email,
+        subject: `Your Agent Code - ${code}`,
+        html: agentWelcomeEmail(name, code)
+      });
+      console.log(`Agent welcome email sent to ${email}`);
+    } catch (emailErr) {
+      console.error("Agent welcome email failed:", emailErr);
+    }
+ 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to create agent" });
   }
 });

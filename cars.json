@@ -2955,6 +2955,23 @@
         "price":200,
         "oldPrice":300,
          "hotDeal": true 
+    },        
+
+    {
+        "id": 213,
+        "make": "A01 stereo earphone",
+        "model": "",
+        "category":"earphone",
+        "createdAt": "2026-04-27",
+        "description": "A01 stereo earphone — delivers crisp sound and comfortable wear for an immersive audio experience.",
+        "general":"household",
+        "year": 2020,
+     "image":"images2/A01 stereo earphone.jpg",
+        "link":"images/wd.jpg",
+          "color": "Silver",
+        "price":200,
+        "oldPrice":300,
+         "hotDeal": true 
     }
 
 

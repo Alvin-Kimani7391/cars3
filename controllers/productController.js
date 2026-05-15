@@ -24,7 +24,8 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    const images = req.files?.map(file => file.path || file.secure_url) || [];
+    // ✅ Fix — multer-storage-cloudinary puts the URL in file.path
+const images = req.files?.map(file => file.path) || [];
 
     if (images.length === 0) {
       return res.status(400).json({

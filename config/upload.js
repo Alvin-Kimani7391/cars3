@@ -2,6 +2,10 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "./cloudinary.js";
 
+// 🔍 TEMP DEBUG
+console.log("UPLOAD.JS LOADED");
+console.log("Cloudinary config:", cloudinary.config());
+
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {

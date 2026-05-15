@@ -1,7 +1,8 @@
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 dotenv.config();
+import mongoose from "mongoose";
+
 import express from "express";
 import path from "path";
 import cors from "cors";
@@ -20,6 +21,11 @@ import { fileURLToPath } from "url";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const app = express();
 
+console.log("CLOUDINARY ENV CHECK:", {
+  name:   process.env.CLOUDINARY_NAME   ? "✅" : "❌ MISSING",
+  key:    process.env.CLOUDINARY_KEY    ? "✅" : "❌ MISSING",
+  secret: process.env.CLOUDINARY_SECRET ? "✅" : "❌ MISSING",
+});
 
 // ===============================
 // FIX FOR ES MODULE PATH

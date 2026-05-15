@@ -5,6 +5,9 @@ import Product from "../models/Product.js";
 // ===============================
 export const createProduct = async (req, res) => {
   try {
+    console.log("📦 BODY:", req.body);
+    console.log("🖼️ FILES:", req.files);
+
     const {
       make,
       model,
@@ -17,15 +20,13 @@ export const createProduct = async (req, res) => {
       oldPrice
     } = req.body;
 
-    // ✅ validation
     if (!make || !category || !description || !price) {
       return res.status(400).json({
         error: "make, category, description, and price are required"
       });
     }
 
-    // ✅ Fix — multer-storage-cloudinary puts the URL in file.path
-const images = req.files?.map(file => file.path) || [];
+    const images = req.files?.map(file => file.path) || [];
 
     if (images.length === 0) {
       return res.status(400).json({
@@ -54,11 +55,13 @@ const images = req.files?.map(file => file.path) || [];
     });
 
   } catch (err) {
-    console.error("CREATE_PRODUCT_ERROR:", err);
-    res.status(500).json({ error: "Failed to create product" });
+    // 🔥 THIS will show the exact crash reason
+    console.error("CREATE_PRODUCT_ERROR name:", err.name);
+    console.error("CREATE_PRODUCT_ERROR message:", err.message);
+    console.error("CREATE_PRODUCT_ERROR stack:", err.stack);
+    res.status(500).json({ error: err.message }); // ← send real error to frontend
   }
 };
-
 
 // ===============================
 // GET ALL PRODUCTS

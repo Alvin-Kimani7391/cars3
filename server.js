@@ -166,6 +166,7 @@ app.use(cors({
 
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // ← ADD THIS LINE
 app.use("/images", express.static(path.join(__dirname, "images2")));
 
 

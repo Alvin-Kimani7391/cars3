@@ -2967,7 +2967,13 @@
         "year": 2020,
      "image":"images2/shoes213.jpg",
         "link":"images/wd.jpg",
-          "color": "black and white",
+          "color": [
+  "Black and White",
+  "Black and Red",
+  "Black and Blue",
+  "Black and Green",
+  "Blue and Pink"
+],
         "price":2300,
         "oldPrice":2700,
          "hotDeal": true 
@@ -2983,7 +2989,13 @@
         "year": 2020,
      "image":"images2/shoes214.jpg",
         "link":"images/wd.jpg",
-          "color": "black and white",
+          "color": [
+  "Black and White",
+  "Black and Red",
+  "Black and Blue",
+  "Black and Green",
+  "Blue and Pink"
+],
         "price":2300,
         "oldPrice":2700,
          "hotDeal": true 

@@ -1472,9 +1472,11 @@
         "general":"household",
         "year": 2020,
         "color": "Silver",
-        "price": 4850,
+        "price": 3000,
+        "oldPrice":4800,
         "image":"images2/wadrobe112.jpg",
-        "link":"images/wd.jpg"
+        "link":"images/wd.jpg",
+        "hotDeal":true
     },
     {
         "id": 113,
